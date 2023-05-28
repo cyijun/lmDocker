@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.1.1-devel-ubuntu22.04
+FROM --platform=$TARGETPLATFORM nvidia/cuda:12.1.1-devel-ubuntu22.04
 LABEL maintainer="Chen Yijun"
 
 ARG BUILD_DATE
@@ -7,7 +7,7 @@ ARG BUILD_VERSION
 LABEL org.label-schema.build-date=$BUILD_DATE
 LABEL org.label-schema.version=$BUILD_VERSION
 
-RUN apt-get update && apt install -y --no-install-recommends \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
         bash ca-certificates wget git gcc sudo libgl1 libglib2.0-dev python3-dev google-perftools gnutls-bin \
         && rm -rf /var/lib/apt/lists/*
 
