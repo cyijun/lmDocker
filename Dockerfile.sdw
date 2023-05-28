@@ -32,6 +32,8 @@ ENV PATH /app/miniconda3/bin/:$PATH
 
 RUN conda install python="3.10" -y
 
+RUN python -m pip install --upgrade pip
+
 WORKDIR /app/stable-diffusion-webui
 
 RUN bash ./webui.sh --skip-torch-cuda-test --no-download-sd-model 2>&1 | grep "No checkpoints found." || exit 1
