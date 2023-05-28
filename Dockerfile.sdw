@@ -7,19 +7,14 @@ ARG BUILD_VERSION
 LABEL org.label-schema.build-date=$BUILD_DATE
 LABEL org.label-schema.version=$BUILD_VERSION
 
-COPY ./config_files/sources.list /etc/apt/sources.list
-
 RUN apt-get update && apt install -y --no-install-recommends \
-        bash ca-certificates wget git gcc sudo libgl1 libglib2.0-dev python3-dev google-perftools \
+        bash ca-certificates wget git gcc sudo libgl1 libglib2.0-dev python3-dev google-perftools gnutls-bin \
         && rm -rf /var/lib/apt/lists/*
 
 RUN echo "LD_PRELOAD=/usr/lib/libtcmalloc.so.4" | tee -a /etc/environment
 
 RUN useradd --home /app -M app -K UID_MIN=10000 -K GID_MIN=10000 -s /bin/bash
 RUN mkdir /app
-
-COPY ./stable-diffusion-webui /app/stable-diffusion-webui
-
 RUN chown app:app -R /app
 RUN usermod -aG sudo app
 RUN echo 'app ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
@@ -31,18 +26,12 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-$(uname -m)
 RUN bash ./Miniconda3-latest-Linux-$(uname -m).sh -b \
     && rm -rf ./Miniconda3-latest-Linux-$(uname -m).sh
 
+RUN git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git /app/stable-diffusion-webui
+
 ENV PATH /app/miniconda3/bin/:$PATH
 
 RUN conda install python="3.10" -y
 
 WORKDIR /app/stable-diffusion-webui
 
-RUN pip config set global.index-url https://mirrors.bfsu.edu.cn/pypi/web/simple
-
-RUN pip install open_clip_torch xformers
-
-RUN pip install -r requirements.txt --prefer-binary --config-settings --confirm-license= --verbose
-
-RUN pip install -e repositories/k-diffusion
-RUN pip install -e repositories/GFPGAN
-RUN pip install -e repositories/ldm-0.1.3
+RUN bash ./webui.sh --skip-torch-cuda-test --no-download-sd-model 2>&1 | grep "No checkpoints found." || exit 1
