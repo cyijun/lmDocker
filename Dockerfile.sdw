@@ -36,4 +36,4 @@ RUN python -m pip install --upgrade pip
 
 WORKDIR /app/stable-diffusion-webui
 
-RUN bash ./webui.sh --skip-torch-cuda-test --no-download-sd-model
+RUN bash ./webui.sh --skip-torch-cuda-test --no-download-sd-model 2>&1 | grep "Can't run without a checkpoint." || exit 1
