@@ -34,7 +34,7 @@ jobs:
         echo "build_date=$build_date" >> $GITHUB_OUTPUT
         echo "build_version=$build_version" >> $GITHUB_OUTPUT
 
-    - name: Build and push
+    - name: Build and push sdw
       uses: docker/build-push-action@v4
       with:
         context: .
@@ -46,4 +46,18 @@ jobs:
         tags: |
           cyijun/lm_dockers:latest-sdw
           cyijun/lm_dockers:sdw-${{ steps.vars.outputs.build_version }}
+        platforms: linux/amd64
+
+    - name: Build and push lc
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        file: Dockerfile.lc
+        build-args: |
+          BUILD_DATE=${{ steps.vars.outputs.build_date }}
+          BUILD_VERSION=${{ steps.vars.outputs.build_version }}
+        push: true
+        tags: |
+          cyijun/lm_dockers:latest-lc
+          cyijun/lm_dockers:lc-${{ steps.vars.outputs.build_version }}
         platforms: linux/amd64

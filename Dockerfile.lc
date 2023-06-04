@@ -10,7 +10,7 @@ LABEL org.label-schema.version=$BUILD_VERSION
 RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo "Asia/Shanghai" > /etc/timezone
 
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
-        bash ca-certificates wget git gcc sudo libgl1 libglib2.0-dev python3-dev google-perftools \
+        bash ca-certificates wget git gcc sudo curl libgl1 libglib2.0-0 \
         && rm -rf /var/lib/apt/lists/*
 
 RUN echo "LD_PRELOAD=/usr/lib/libtcmalloc.so.4" | tee -a /etc/environment
@@ -28,19 +28,15 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-$(uname -m)
 RUN bash ./Miniconda3-latest-Linux-$(uname -m).sh -b \
     && rm -rf ./Miniconda3-latest-Linux-$(uname -m).sh
 
-RUN git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git /app/stable-diffusion-webui
-
-WORKDIR /app/stable-diffusion-webui
+RUN git clone https://github.com/imClumsyPanda/langchain-ChatGLM.git /app/langchain-ChatGLM
+WORKDIR /app/langchain-ChatGLM
 
 ENV PATH /app/miniconda3/bin/:$PATH
 
 RUN conda install python="3.10" -y
+
 RUN python -m pip install --upgrade pip
 
-RUN touch install.log && \
-    timeout 2h bash -c "./webui.sh --skip-torch-cuda-test --no-download-sd-model 2>&1 | tee install.log &" && \
-    sleep 5 && while true; do grep -q "No checkpoints found." install.log && exit 0; grep -q "ERROR" install.log && exit 1; sleep 3; done
+RUN pip3 install -r requirements.txt && rm -rf `pip3 cache dir`
 
-RUN rm -rf `pip3 cache dir`
-
-CMD ["bash", "webui.sh", "--listen"]
+CMD ["python3","-u", "webui.py"]
