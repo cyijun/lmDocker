@@ -18,26 +18,20 @@ jobs:
       uses: easimon/maximize-build-space@master
       with:
         root-reserve-mb: 35000
-        swap-size-mb: 4000
         temp-reserve-mb: 20000
         remove-dotnet: true
         remove-android: true
         remove-haskell: true
         remove-codeql: true
-
-    - name: Show Space
-      run: |
-        echo "Free space:"
-        df -h
     
     - name: Checkout Project
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v3
 
     - name: Login to Docker Hub
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -51,7 +45,7 @@ jobs:
         echo "build_version=$build_version" >> $GITHUB_OUTPUT
         
     - name: Build and push sdw
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v5
       with:
         context: .
         file: Dockerfile.sdw
