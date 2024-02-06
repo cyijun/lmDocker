@@ -63,16 +63,16 @@ jobs:
           cyijun/lm_dockers:sdw-${{ steps.vars.outputs.build_version }}
         platforms: linux/amd64
 
-    - name: Build and push lc
-      uses: docker/build-push-action@v4
-      with:
-        context: .
-        file: Dockerfile.lc
-        build-args: |
-          BUILD_DATE=${{ steps.vars.outputs.build_date }}
-          BUILD_VERSION=${{ steps.vars.outputs.build_version }}
-        push: true
-        tags: |
-          cyijun/lm_dockers:latest-lc
-          cyijun/lm_dockers:lc-${{ steps.vars.outputs.build_version }}
-        platforms: linux/amd64
+#    - name: Build and push lc
+#      uses: docker/build-push-action@v4
+#      with:
+#        context: .
+#        file: Dockerfile.lc
+#        build-args: |
+#          BUILD_DATE=${{ steps.vars.outputs.build_date }}
+#          BUILD_VERSION=${{ steps.vars.outputs.build_version }}
+#        push: true
+#        tags: |
+#          cyijun/lm_dockers:latest-lc
+#          cyijun/lm_dockers:lc-${{ steps.vars.outputs.build_version }}
+#        platforms: linux/amd64
