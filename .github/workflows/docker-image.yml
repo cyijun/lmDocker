@@ -25,7 +25,7 @@ jobs:
         remove-codeql: true
 
     - name: Mount tmp dir
-      run: mkdir /mnt/tmp && mount --bind /tmp /mnt/tmp
+      run: sudo mkdir /mnt/tmp && sudo mount --bind /tmp /mnt/tmp
     
     - name: Checkout Project
       uses: actions/checkout@v4
