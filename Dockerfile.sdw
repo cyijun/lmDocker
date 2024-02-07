@@ -34,7 +34,7 @@ RUN git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git /app/s
 
 WORKDIR /app/stable-diffusion-webui
 
-RUN mkdir ./openai && git clone https://huggingface.co/openai/clip-vit-large-patch14 ./openai/clip-vit-large-patch14
+RUN mkdir ./openai && git clone https://huggingface.co/openai/clip-vit-large-patch14 ./openai/clip-vit-large-patch14 && rm -r ./openai/clip-vit-large-patch14/.git ./openai/clip-vit-large-patch14/flax_model.msgpack ./openai/clip-vit-large-patch14/pytorch_model.bin ./openai/clip-vit-large-patch14/tf_model.h5
 
 RUN conda install python="3.10" -y
 
